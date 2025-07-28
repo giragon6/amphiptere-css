@@ -1,5 +1,6 @@
 
 import styles from './liquid-navbar.css?inline';
+import getNavbarRect from './get-navbar-svg';
 
 class LiquidNavbar extends HTMLElement {
   constructor() {
@@ -83,13 +84,27 @@ class LiquidNavbar extends HTMLElement {
     const style = document.createElement('style');
     style.textContent = styles;
 
+    const initialPath = getNavbarRect({
+      rectWidth: 150,
+      rectHeight: 800,
+      startY: 200,
+      cutoutWidth: 70,
+      cutoutHeight: 45,
+      topRightCutoutCurveRadius: 30,
+      bottomRightCutoutCurveRadius: 30,
+      topCornerCurveRadius: 0,
+      bottomCornerCurveRadius: 40
+    });
+
+    console.log(initialPath)
+
     const wrapper = document.createElement('nav');
     wrapper.className = 'vertical-navbar';
     wrapper.innerHTML = `
       <svg height="0" width="0">
         <clipPath id="navbarPath">
           <path
-            d="M152 246H151.862C151.862 262.91 138.154 276.618 121.244 276.618H43.6221C26.158 276.618 12.0001 290.775 12 308.239C12 325.703 26.1579 339.861 43.6221 339.861H115.723C135.682 339.861 151.862 356.041 151.862 376H152V3010C152 3026.016 139.016 3039 123 3039H0V0H152V246Z"
+            d="${initialPath}"
             id="navbarDrawPath"
           />
         </clipPath> 
@@ -121,23 +136,23 @@ class LiquidNavbar extends HTMLElement {
     this.shadowRoot.appendChild(style);
     this.shadowRoot.appendChild(wrapper);
 
-    // requestAnimationFrame(() => {
-    //   const navItems = this.shadowRoot.querySelectorAll('.nav-link');
-    //   const navPath = this.shadowRoot.querySelector('#navbarPath');
-    //   const navDrawPath = this.shadowRoot.querySelector('#navbarDrawPath');
+    requestAnimationFrame(() => {
+      const navItems = this.shadowRoot.querySelectorAll('.nav-link');
+      const navPath = this.shadowRoot.querySelector('#navbarPath');
+      // const navDrawPath = this.shadowRoot.querySelector('#navbarDrawPath');
 
-    //   navItems.forEach(item => {
-    //     const topCutout = 276.618;
-    //     const itemRect = item.getBoundingClientRect();
-    //     const centerItemOffset = itemRect.top - topCutout;
-    //     item.addEventListener('mouseover', () => {
-    //       setNavPath(centerItemOffset);
-    //     });
-    //     item.addEventListener('mouseleave', () => {
-    //       navPath.setAttribute('transform', `translate(0, 0)`);
-    //     });
-    //   });
-    // });
+      navItems.forEach(item => {
+        const topCutout = 276.618;
+        const itemRect = item.getBoundingClientRect();
+        const centerItemOffset = itemRect.top - topCutout;
+        item.addEventListener('mouseover', () => {
+          // You can update the path here if you want dynamic cutouts
+        });
+        item.addEventListener('mouseleave', () => {
+          navPath.setAttribute('transform', `translate(0, 0)`);
+        });
+      });
+    });
   }
 }
 

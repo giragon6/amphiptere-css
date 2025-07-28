@@ -13,7 +13,7 @@
  * @param {number} opts.bottomCornerCurveRadius - border radius of bottom right corner of rectangle
  * @returns {string} SVG path data
  */
-function getRectWithRightPillCutout({
+export default function getNavbarRect({
   rectWidth = 150,
   rectHeight = 800,
   startY = 280,
@@ -25,12 +25,12 @@ function getRectWithRightPillCutout({
   bottomCornerCurveRadius = 40
 } = {}) {
   return `
-    m0 0
-    h${rectWidth-topCornerCurveRadius}
+    m0 0h${rectWidth-topCornerCurveRadius}
+    c${topCornerCurveRadius} 0 ${topCornerCurveRadius} 0 ${topCornerCurveRadius} ${topCornerCurveRadius}
     v${startY-topRightCutoutCurveRadius}
     c0 0 0 ${topRightCutoutCurveRadius} ${-topRightCutoutCurveRadius} ${topRightCutoutCurveRadius}
     h${-cutoutWidth}
-    c${-cutoutHeight} 0${-cutoutHeight} ${-cutoutHeight} 0 ${-cutoutHeight}
+    c${-cutoutHeight} 0${-cutoutHeight} ${cutoutHeight} 0 ${cutoutHeight}
     h${cutoutWidth}
     c${bottomRightCutoutCurveRadius} 0 ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} 
     v${rectHeight-startY-topRightCutoutCurveRadius-cutoutHeight-bottomRightCutoutCurveRadius-bottomCornerCurveRadius}
