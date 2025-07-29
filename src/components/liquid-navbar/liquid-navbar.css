@@ -1,5 +1,4 @@
 :host {
-  --navbar-width: 150px;
   --navbar-radius: 0;
   --navbar-bg: linear-gradient(180deg, #232b6b 0%, #6a1e8a 100%);
   --navbar-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
@@ -21,7 +20,6 @@
 }
 
 .vertical-navbar {
-  width: var(--navbar-width);
   min-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -71,6 +69,7 @@
   margin-bottom: 16px;
   position: relative;
   display: flex;
+  align-items: center;
 }
 
 .nav-item:hover {

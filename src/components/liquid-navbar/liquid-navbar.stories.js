@@ -15,6 +15,13 @@ export const Basic = () => `
       {"label":"Home","href":"/home","icon":"/assets/home.svg"},
       {"label":"Jobs","href":"/jobs","icon":"/assets/jobs.svg"}
     ]'
-    trailing='{"label":"Logout","href":"/logout","icon":"/assets/logout.svg"}'
+    trailing='{"label":"Logout","href":"/logout","icon":"/assets/logout.svg"}',
+    rectwidth="150",
+    rectheight="700",
+    cutoutheight="0",
+    cutoutwidth="0",
+    toprightcutoutcurveradius="0",
+    bottomrightcutoutcurveradius="0",
+    bottomcornercurveradius="40"
   ></liquid-navbar>
 `;

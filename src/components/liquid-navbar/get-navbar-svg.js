@@ -11,6 +11,7 @@
  * @param {number} opts.bottomRightCutoutCurveRadius - radius of bottom curve out of cutout
  * @param {number} opts.topCornerCurveRadius - border radius of top right corner of rectangle
  * @param {number} opts.bottomCornerCurveRadius - border radius of bottom right corner of rectangle
+ * @param {boolean} opts.justRect - if true, don't draw a cutout
  * @returns {string} SVG path data
  */
 export default function getNavbarRect({
@@ -22,22 +23,23 @@ export default function getNavbarRect({
   topRightCutoutCurveRadius = 30,
   bottomRightCutoutCurveRadius = 30,
   topCornerCurveRadius = 40,
-  bottomCornerCurveRadius = 40
+  bottomCornerCurveRadius = 40,
 } = {}) {
   return `
-    m0 0h${rectWidth-topCornerCurveRadius}
+    m0 0
+    h${rectWidth-topCornerCurveRadius}
     c${topCornerCurveRadius} 0 ${topCornerCurveRadius} 0 ${topCornerCurveRadius} ${topCornerCurveRadius}
-    v${startY-topRightCutoutCurveRadius}
+    v${startY-topCornerCurveRadius-topRightCutoutCurveRadius}
     c0 0 0 ${topRightCutoutCurveRadius} ${-topRightCutoutCurveRadius} ${topRightCutoutCurveRadius}
     h${-cutoutWidth}
-    c${-cutoutHeight} 0${-cutoutHeight} ${cutoutHeight} 0 ${cutoutHeight}
+    c${-cutoutHeight} 0 ${-cutoutHeight} ${cutoutHeight} 0 ${cutoutHeight}
     h${cutoutWidth}
     c${bottomRightCutoutCurveRadius} 0 ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} 
-    v${rectHeight-startY-topRightCutoutCurveRadius-cutoutHeight-bottomRightCutoutCurveRadius-bottomCornerCurveRadius}
-    c0 ${bottomCornerCurveRadius} 0 ${bottomCornerCurveRadius}-${bottomCornerCurveRadius} ${bottomCornerCurveRadius}
+    v${rectHeight-startY-cutoutHeight-bottomRightCutoutCurveRadius-bottomCornerCurveRadius-topCornerCurveRadius}
+    c0 ${bottomCornerCurveRadius} 0 ${bottomCornerCurveRadius} ${-bottomCornerCurveRadius} ${bottomCornerCurveRadius}
     h${-(rectWidth-bottomCornerCurveRadius)}
-    v${-rectHeight}
-    Z
+    v${-rectHeight}   
+    z
   `;
 }
 

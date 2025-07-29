@@ -1,6 +1,8 @@
 
 import styles from './liquid-navbar.css?inline';
 import getNavbarRect from './get-navbar-svg';
+import * as d3 from 'd3';
+import { interpolatePath } from 'd3-interpolate-path';
 
 class LiquidNavbar extends HTMLElement {
   constructor() {
@@ -9,11 +11,27 @@ class LiquidNavbar extends HTMLElement {
     this._navItems = [];
     this._logo = '';
     this._trailing = null;
+    this._rectParams = {
+      rectWidth: 150,
+      rectHeight: 700,
+      startY: 200,
+      cutoutWidth: 70,
+      cutoutHeight: 45,
+      topRightCutoutCurveRadius: 30,
+      bottomRightCutoutCurveRadius: 30,
+      topCornerCurveRadius: 0,
+      bottomCornerCurveRadius: 40
+    };
     this.render();
   }
 
   static get observedAttributes() {
-    return ['logo', 'items', 'trailing'];
+    return [
+      'logo', 'items', 'trailing',
+      'rectwidth', 'rectheight', 'starty', 'cutoutwidth', 'cutoutheight',
+      'toprightcutoutcurveradius', 'bottomrightcutoutcurveradius',
+      'topcornercurveradius', 'bottomcornercurveradius'
+    ];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -32,8 +50,42 @@ class LiquidNavbar extends HTMLElement {
         } catch {
           this._trailing = null;
         }
+      } else if ([
+        'rectwidth', 'rectheight', 'starty', 'cutoutwidth', 'cutoutheight',
+        'toprightcutoutcurveradius', 'bottomrightcutoutcurveradius',
+        'topcornercurveradius', 'bottomcornercurveradius'
+      ].includes(name)) {
+        this._rectParams = {
+          ...this._rectParams,
+          [this._toCamelCase(name)]: newValue !== null ? parseFloat(newValue) : this._rectParams[this._toCamelCase(name)]
+        };
       }
       this.render();
+    }
+  }
+
+  _toCamelCase(attr) {
+    switch (attr) {
+      case "rectwidth":
+        return "rectWidth";
+      case "rectheight":
+        return "rectHeight";
+      case "starty":
+        return "startY";
+      case "cutoutwidth":
+        return "cutoutWidth";
+      case "cutoutheight":
+        return "cutoutHeight";
+      case "toprightcutoutcurveradius":
+        return "topRightCutoutCurveRadius";
+      case "bottomrightcutoutcurveradius":
+        return "bottomRightCutoutCurveRadius";
+      case "topcornercurveradius":
+        return "topCornerCurveRadius";
+      case "bottomcornercurveradius":
+        return "bottomCornerCurveRadius";
+      default:
+        return attr.replace(/([-_][a-z])/g, g => g[1].toUpperCase());
     }
   }
 
@@ -59,7 +111,6 @@ class LiquidNavbar extends HTMLElement {
   }
 
   connectedCallback() {
-    // Initial render if attributes are present
     if (this.hasAttribute('logo')) this._logo = this.getAttribute('logo');
     if (this.hasAttribute('items')) {
       try {
@@ -75,7 +126,28 @@ class LiquidNavbar extends HTMLElement {
         this._trailing = null;
       }
     }
+    [
+      'rectwidth', 'rectheight', 'starty', 'cutoutwidth', 'cutoutheight',
+      'toprightcutoutcurveradius', 'bottomrightcutoutcurveradius',
+      'topcornercurveradius', 'bottomcornercurveradius'
+    ].forEach(attr => {
+      if (this.hasAttribute(attr)) {
+        this._rectParams[this._toCamelCase(attr)] = parseFloat(this.getAttribute(attr));
+      }
+    }); 
     this.render();
+  }
+
+  animatePath(fromPath, toPath, svgPathElement, duration = 400) {
+    const excludeSegment = (a, b) => {
+      console.log(d3.select(svgPathElement).attr('d')); 
+      return a.x == b.x;
+    };
+    const interpolator = interpolatePath(fromPath, toPath, { excludeSegment });
+    d3.select(svgPathElement)
+      .transition()
+      .duration(duration)
+      .attrTween('d', () => t => interpolator(t));
   }
 
   render() {
@@ -84,22 +156,11 @@ class LiquidNavbar extends HTMLElement {
     const style = document.createElement('style');
     style.textContent = styles;
 
-    const initialPath = getNavbarRect({
-      rectWidth: 150,
-      rectHeight: 800,
-      startY: 200,
-      cutoutWidth: 70,
-      cutoutHeight: 45,
-      topRightCutoutCurveRadius: 30,
-      bottomRightCutoutCurveRadius: 30,
-      topCornerCurveRadius: 0,
-      bottomCornerCurveRadius: 40
-    });
-
-    console.log(initialPath)
+    const initialPath = getNavbarRect(this._rectParams);
 
     const wrapper = document.createElement('nav');
     wrapper.className = 'vertical-navbar';
+    wrapper.style = `width: ${this._rectParams.rectWidth}px`;
     wrapper.innerHTML = `
       <svg height="0" width="0">
         <clipPath id="navbarPath">
@@ -138,19 +199,37 @@ class LiquidNavbar extends HTMLElement {
 
     requestAnimationFrame(() => {
       const navItems = this.shadowRoot.querySelectorAll('.nav-link');
-      const navPath = this.shadowRoot.querySelector('#navbarPath');
-      // const navDrawPath = this.shadowRoot.querySelector('#navbarDrawPath');
-
+      const navDrawPath = this.shadowRoot.querySelector('#navbarDrawPath');
+      const margin = 5; 
+      const cutoutCurveRad = 40;
+      const cutoutHeight = 65;
       navItems.forEach(item => {
-        const topCutout = 276.618;
-        const itemRect = item.getBoundingClientRect();
-        const centerItemOffset = itemRect.top - topCutout;
         item.addEventListener('mouseover', () => {
-          // You can update the path here if you want dynamic cutouts
-        });
+          const itemRect = item.getBoundingClientRect();
+          const targetParams = { 
+            ...this._rectParams, 
+            cutoutWidth: itemRect.width, 
+            cutoutHeight: cutoutHeight, 
+            topRightCutoutCurveRadius: cutoutCurveRad, 
+            bottomRightCutoutCurveRadius: cutoutCurveRad, 
+            startY: itemRect.top - margin 
+          };
+          const targetPath = getNavbarRect(targetParams);
+          this.animatePath(navDrawPath.getAttribute('d'), targetPath, navDrawPath, 500);
+        })
         item.addEventListener('mouseleave', () => {
-          navPath.setAttribute('transform', `translate(0, 0)`);
-        });
+          const itemRect = item.getBoundingClientRect();
+          const flushParams = { 
+            ...this._rectParams, 
+            cutoutWidth: 0,
+            cutoutHeight: 0,  
+            topRightCutoutCurveRadius: 0, 
+            bottomRightCutoutCurveRadius: 0, 
+            startY: itemRect.top + itemRect.height / 2 
+          };
+          const flushPath = getNavbarRect(flushParams);
+          this.animatePath(navDrawPath.getAttribute('d'), flushPath, navDrawPath, 500);
+        })
       });
     });
   }
