@@ -2,6 +2,7 @@ import './liquid-navbar.js';
 
 export default {
   title: 'Components/LiquidNavbar',
+  tags: ['autodocs'],
   component: 'liquid-navbar',
   parameters: {
     layout: 'fullscreen',

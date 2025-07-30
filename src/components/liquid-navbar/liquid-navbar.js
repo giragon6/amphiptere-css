@@ -1,8 +1,7 @@
 
 import styles from './liquid-navbar.css?inline';
 import getNavbarRect from './get-navbar-svg';
-import * as d3 from 'd3';
-import { interpolatePath } from 'd3-interpolate-path';
+import animatePath from './animate-path';
 
 class LiquidNavbar extends HTMLElement {
   constructor() {
@@ -138,18 +137,6 @@ class LiquidNavbar extends HTMLElement {
     this.render();
   }
 
-  animatePath(fromPath, toPath, svgPathElement, duration = 400) {
-    const excludeSegment = (a, b) => {
-      console.log(d3.select(svgPathElement).attr('d')); 
-      return a.x == b.x;
-    };
-    const interpolator = interpolatePath(fromPath, toPath, { excludeSegment });
-    d3.select(svgPathElement)
-      .transition()
-      .duration(duration)
-      .attrTween('d', () => t => interpolator(t));
-  }
-
   render() {
     if (!this.shadowRoot) return;
     this.shadowRoot.innerHTML = '';
@@ -219,7 +206,7 @@ class LiquidNavbar extends HTMLElement {
             startY: itemRect.top - itemRect.height 
           };
           const targetPath = getNavbarRect(targetParams);
-          this.animatePath(navDrawPath.getAttribute('d'), targetPath, navDrawPath, 350);
+          animatePath(navDrawPath.getAttribute('d'), targetPath, navDrawPath, 350);
         })      
         item.addEventListener('mouseleave', () => {
           const itemRect = item.getBoundingClientRect();
@@ -232,7 +219,7 @@ class LiquidNavbar extends HTMLElement {
             startY: itemRect.top + itemRect.height / 2 
           };
           const flushPath = getNavbarRect(flushParams);
-          this.animatePath(navDrawPath.getAttribute('d'), flushPath, navDrawPath, 350);
+          animatePath(navDrawPath.getAttribute('d'), flushPath, navDrawPath, 350);
         })
       });
     });
