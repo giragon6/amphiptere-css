@@ -9,7 +9,9 @@ export type RectParams = {
   topCornerCurveRadius: number,
   bottomCornerCurveRadius: number,
   topRightCutoutCurveHeight?: number,
-  bottomRightCutoutCurveHeight?: number
+  bottomRightCutoutCurveHeight?: number,
+  topCornerCurveHeight?: number,
+  bottomCornerCurveHeight?: number
 }
 
 /**
@@ -37,21 +39,23 @@ export default function getNavbarRect({
   topCornerCurveRadius,
   bottomCornerCurveRadius,
   topRightCutoutCurveHeight = topRightCutoutCurveRadius,
-  bottomRightCutoutCurveHeight = bottomRightCutoutCurveRadius
+  bottomRightCutoutCurveHeight = bottomRightCutoutCurveRadius,
+  topCornerCurveHeight = topCornerCurveRadius,
+  bottomCornerCurveHeight = bottomCornerCurveRadius
 }: RectParams) {
   const leftCutoutCurveWidth = cutoutHeight * 0.75;
   return `
     m0 0
     h${rectWidth-topCornerCurveRadius}
-    c${topCornerCurveRadius} 0 ${topCornerCurveRadius} 0 ${topCornerCurveRadius} ${topCornerCurveRadius}
-    v${startY-topCornerCurveRadius-topRightCutoutCurveHeight}
+    c${topCornerCurveRadius} 0 ${topCornerCurveRadius} 0 ${topCornerCurveRadius} ${topCornerCurveHeight}
+    v${startY-topCornerCurveHeight-topRightCutoutCurveHeight}
     c0 0 0 ${topRightCutoutCurveHeight} ${-topRightCutoutCurveRadius} ${topRightCutoutCurveHeight}
     h${-(cutoutWidth - leftCutoutCurveWidth - topRightCutoutCurveRadius)}
     c${-cutoutHeight} 0 ${-cutoutHeight} ${cutoutHeight} 0 ${cutoutHeight}
     h${cutoutWidth - leftCutoutCurveWidth - bottomRightCutoutCurveRadius}
     c${bottomRightCutoutCurveRadius} 0 ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveHeight} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveHeight} 
-    v${rectHeight-startY-cutoutHeight-bottomRightCutoutCurveHeight-bottomCornerCurveRadius-topCornerCurveRadius}
-    c0 ${bottomCornerCurveRadius} 0 ${bottomCornerCurveRadius} ${-bottomCornerCurveRadius} ${bottomCornerCurveRadius}
+    v${rectHeight-startY-cutoutHeight-bottomRightCutoutCurveHeight-bottomCornerCurveHeight-topCornerCurveHeight}
+    c0 ${bottomCornerCurveHeight} 0 ${bottomCornerCurveHeight} ${-bottomCornerCurveRadius} ${bottomCornerCurveHeight}
     h${-(rectWidth-bottomCornerCurveRadius)}
     v${-rectHeight}
     z
