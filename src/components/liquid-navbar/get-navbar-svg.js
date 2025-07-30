@@ -11,34 +11,35 @@
  * @param {number} opts.bottomRightCutoutCurveRadius - radius of bottom curve out of cutout
  * @param {number} opts.topCornerCurveRadius - border radius of top right corner of rectangle
  * @param {number} opts.bottomCornerCurveRadius - border radius of bottom right corner of rectangle
- * @param {boolean} opts.justRect - if true, don't draw a cutout
  * @returns {string} SVG path data
  */
 export default function getNavbarRect({
-  rectWidth = 150,
-  rectHeight = 800,
-  startY = 280,
-  cutoutWidth = 70,
-  cutoutHeight = 45,
-  topRightCutoutCurveRadius = 30,
-  bottomRightCutoutCurveRadius = 30,
-  topCornerCurveRadius = 40,
-  bottomCornerCurveRadius = 40,
+  rectWidth,
+  rectHeight,
+  startY,
+  cutoutWidth,
+  cutoutHeight,
+  topRightCutoutCurveRadius,
+  bottomRightCutoutCurveRadius,
+  topCornerCurveRadius,
+  bottomCornerCurveRadius,
+  topRightCutoutCurveHeight = topRightCutoutCurveRadius,
+  bottomRightCutoutCurveHeight = bottomRightCutoutCurveRadius
 } = {}) {
   return `
     m0 0
     h${rectWidth-topCornerCurveRadius}
     c${topCornerCurveRadius} 0 ${topCornerCurveRadius} 0 ${topCornerCurveRadius} ${topCornerCurveRadius}
-    v${startY-topCornerCurveRadius-topRightCutoutCurveRadius}
-    c0 0 0 ${topRightCutoutCurveRadius} ${-topRightCutoutCurveRadius} ${topRightCutoutCurveRadius}
+    v${startY-topCornerCurveRadius-topRightCutoutCurveHeight}
+    c0 0 0 ${topRightCutoutCurveHeight} ${-topRightCutoutCurveRadius} ${topRightCutoutCurveHeight}
     h${-cutoutWidth}
     c${-cutoutHeight} 0 ${-cutoutHeight} ${cutoutHeight} 0 ${cutoutHeight}
     h${cutoutWidth}
-    c${bottomRightCutoutCurveRadius} 0 ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveRadius} 
-    v${rectHeight-startY-cutoutHeight-bottomRightCutoutCurveRadius-bottomCornerCurveRadius-topCornerCurveRadius}
+    c${bottomRightCutoutCurveRadius} 0 ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveHeight} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveHeight} 
+    v${rectHeight-startY-cutoutHeight-bottomRightCutoutCurveHeight-bottomCornerCurveRadius-topCornerCurveRadius}
     c0 ${bottomCornerCurveRadius} 0 ${bottomCornerCurveRadius} ${-bottomCornerCurveRadius} ${bottomCornerCurveRadius}
     h${-(rectWidth-bottomCornerCurveRadius)}
-    v${-rectHeight}   
+    v${-rectHeight}
     z
   `;
 }

@@ -15,10 +15,10 @@ class LiquidNavbar extends HTMLElement {
       rectWidth: 150,
       rectHeight: 700,
       startY: 200,
-      cutoutWidth: 70,
-      cutoutHeight: 45,
-      topRightCutoutCurveRadius: 30,
-      bottomRightCutoutCurveRadius: 30,
+      cutoutWidth: 0,
+      cutoutHeight: 0,
+      topRightCutoutCurveRadius: 0,
+      bottomRightCutoutCurveRadius: 0,
       topCornerCurveRadius: 0,
       bottomCornerCurveRadius: 40
     };
@@ -134,7 +134,7 @@ class LiquidNavbar extends HTMLElement {
       if (this.hasAttribute(attr)) {
         this._rectParams[this._toCamelCase(attr)] = parseFloat(this.getAttribute(attr));
       }
-    }); 
+    });      
     this.render();
   }
 
@@ -160,7 +160,7 @@ class LiquidNavbar extends HTMLElement {
 
     const wrapper = document.createElement('nav');
     wrapper.className = 'vertical-navbar';
-    wrapper.style = `width: ${this._rectParams.rectWidth}px`;
+    wrapper.style = `width: ${this._rectParams.rectWidth}px; height: ${this._rectParams.rectHeight}px;`;
     wrapper.innerHTML = `
       <svg height="0" width="0">
         <clipPath id="navbarPath">
@@ -178,20 +178,22 @@ class LiquidNavbar extends HTMLElement {
         ${Array.isArray(this._navItems) ? this._navItems.map(item => `
           <li class="nav-item">
             <a class="nav-link" href="${item.href || '#'}">
-              <span class="nav-icon">${item.icon ? `<img src="${item.icon}" alt="${item.label}" width="22" height="22" />` : ''}</span>
-              <span>${item.label || ''}</span>
+            <span class="nav-icon">${item.icon ? `<img src="${item.icon}" alt="${item.label}" width="22" height="22" />` : ''}</span>
+            ${item.label || ''}
             </a>
+            <div class="nav-item-bg"></div>
           </li>
         `).join('') : ''}
+        <div class="nav-item trailing">
+          ${this._trailing ? `
+            <a class="nav-link" href="${this._trailing.href || '#'}">
+              <span class="nav-icon">${this._trailing.icon ? `<img src="${this._trailing.icon}" alt="${this._trailing.label}" width="22" height="22" />` : ''}</span>
+              ${this._trailing.label || ''}
+            </a>
+            <div class="nav-item-bg"></div>
+          ` : ''}
+        </div>
       </ul>
-      <div class="nav-item trailing">
-        ${this._trailing ? `
-          <a class="nav-link" href="${this._trailing.href || '#'}">
-            <span class="nav-icon">${this._trailing.icon ? `<img src="${this._trailing.icon}" alt="${this._trailing.label}" width="22" height="22" />` : ''}</span>
-            <span>${this._trailing.label || ''}</span>
-          </a>
-        ` : ''}
-      </div>
     `;
 
     this.shadowRoot.appendChild(style);
@@ -200,23 +202,25 @@ class LiquidNavbar extends HTMLElement {
     requestAnimationFrame(() => {
       const navItems = this.shadowRoot.querySelectorAll('.nav-link');
       const navDrawPath = this.shadowRoot.querySelector('#navbarDrawPath');
-      const margin = 5; 
       const cutoutCurveRad = 40;
-      const cutoutHeight = 65;
       navItems.forEach(item => {
         item.addEventListener('mouseover', () => {
           const itemRect = item.getBoundingClientRect();
-          const targetParams = { 
+          const cutoutHeight = itemRect.height + 50;
+          const safeMargin = (cutoutHeight - itemRect.height) / 2 + cutoutCurveRad;
+          const targetParams = {
             ...this._rectParams, 
-            cutoutWidth: itemRect.width, 
+            cutoutWidth: this._rectParams.rectWidth - itemRect.left - cutoutCurveRad - 25, 
             cutoutHeight: cutoutHeight, 
-            topRightCutoutCurveRadius: cutoutCurveRad, 
-            bottomRightCutoutCurveRadius: cutoutCurveRad, 
-            startY: itemRect.top - margin 
+            topRightCutoutCurveRadius: cutoutCurveRad,
+            bottomRightCutoutCurveRadius: cutoutCurveRad,
+            topRightCutoutCurveHeight: (itemRect.top < safeMargin) ? 0 : cutoutCurveRad,
+            bottomRightCutoutCurveHeight: (this._rectParams.rectHeight - itemRect.bottom < safeMargin) ? 0 : cutoutCurveRad, 
+            startY: itemRect.top - itemRect.height 
           };
           const targetPath = getNavbarRect(targetParams);
-          this.animatePath(navDrawPath.getAttribute('d'), targetPath, navDrawPath, 500);
-        })
+          this.animatePath(navDrawPath.getAttribute('d'), targetPath, navDrawPath, 350);
+        })      
         item.addEventListener('mouseleave', () => {
           const itemRect = item.getBoundingClientRect();
           const flushParams = { 
@@ -228,7 +232,7 @@ class LiquidNavbar extends HTMLElement {
             startY: itemRect.top + itemRect.height / 2 
           };
           const flushPath = getNavbarRect(flushParams);
-          this.animatePath(navDrawPath.getAttribute('d'), flushPath, navDrawPath, 500);
+          this.animatePath(navDrawPath.getAttribute('d'), flushPath, navDrawPath, 350);
         })
       });
     });
