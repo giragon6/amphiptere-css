@@ -5,7 +5,7 @@
  * @param {number} opts.rectWidth - rectangle width
  * @param {number} opts.rectHeight - rectangle height
  * @param {number} opts.startY - y-position (from top of rectangle) where cutout starts
- * @param {number} opts.cutoutWidth - width of cutout (not including curves)
+ * @param {number} opts.cutoutWidth - width of cutout (including curves)
  * @param {number} opts.cutoutHeight - height of cutout (not including top/bottom right curve)
  * @param {number} opts.topRightCutoutCurveRadius - radius of top curve into cutout
  * @param {number} opts.bottomRightCutoutCurveRadius - radius of bottom curve out of cutout
@@ -26,15 +26,16 @@ export default function getNavbarRect({
   topRightCutoutCurveHeight = topRightCutoutCurveRadius,
   bottomRightCutoutCurveHeight = bottomRightCutoutCurveRadius
 } = {}) {
+  const leftCutoutCurveWidth = cutoutHeight * 0.75;
   return `
     m0 0
     h${rectWidth-topCornerCurveRadius}
     c${topCornerCurveRadius} 0 ${topCornerCurveRadius} 0 ${topCornerCurveRadius} ${topCornerCurveRadius}
     v${startY-topCornerCurveRadius-topRightCutoutCurveHeight}
     c0 0 0 ${topRightCutoutCurveHeight} ${-topRightCutoutCurveRadius} ${topRightCutoutCurveHeight}
-    h${-cutoutWidth}
+    h${-(cutoutWidth - leftCutoutCurveWidth - topRightCutoutCurveRadius)}
     c${-cutoutHeight} 0 ${-cutoutHeight} ${cutoutHeight} 0 ${cutoutHeight}
-    h${cutoutWidth}
+    h${cutoutWidth - leftCutoutCurveWidth - bottomRightCutoutCurveRadius}
     c${bottomRightCutoutCurveRadius} 0 ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveHeight} ${bottomRightCutoutCurveRadius} ${bottomRightCutoutCurveHeight} 
     v${rectHeight-startY-cutoutHeight-bottomRightCutoutCurveHeight-bottomCornerCurveRadius-topCornerCurveRadius}
     c0 ${bottomCornerCurveRadius} 0 ${bottomCornerCurveRadius} ${-bottomCornerCurveRadius} ${bottomCornerCurveRadius}
