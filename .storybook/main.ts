@@ -1,7 +1,6 @@
+import { StorybookConfig } from "@storybook/web-components-vite";
 
-
-/** @type { import('@storybook/web-components-vite').StorybookConfig } */
-const config = {
+const config: StorybookConfig = {
   "stories": [
     "../src/**/*.mdx",
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"

@@ -1,9 +1,20 @@
-
+// @ts-ignore
 import styles from './liquid-navbar.css?inline';
-import getNavbarRect from './get-navbar-svg';
+import getNavbarRect, { RectParams } from './get-navbar-svg';
 import animatePath from './animate-path';
-
+  
+type NavElement = {
+  label: string,
+  href: string,
+  icon: string // path to icon asset
+}
+    
 class LiquidNavbar extends HTMLElement {
+  _navItems: NavElement[];
+  _logo: string | null; // path to logo asset
+  _trailing: NavElement | null;
+  _rectParams: RectParams;
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -11,7 +22,7 @@ class LiquidNavbar extends HTMLElement {
     this._logo = '';
     this._trailing = null;
     this._rectParams = {
-      rectWidth: 150,
+      rectWidth: 250,
       rectHeight: 700,
       startY: 200,
       cutoutWidth: 0,
@@ -54,16 +65,18 @@ class LiquidNavbar extends HTMLElement {
         'toprightcutoutcurveradius', 'bottomrightcutoutcurveradius',
         'topcornercurveradius', 'bottomcornercurveradius'
       ].includes(name)) {
+        console.log(this._toParamName(name))
         this._rectParams = {
           ...this._rectParams,
-          [this._toCamelCase(name)]: newValue !== null ? parseFloat(newValue) : this._rectParams[this._toCamelCase(name)]
+          [this._toParamName(name)]: newValue !== null ? parseFloat(newValue) : this._rectParams[this._toParamName(name)]
         };
+        console.log(this._rectParams)
       }
       this.render();
     }
   }
 
-  _toCamelCase(attr) {
+  _toParamName(attr) {
     switch (attr) {
       case "rectwidth":
         return "rectWidth";
@@ -96,7 +109,7 @@ class LiquidNavbar extends HTMLElement {
   }
 
   set logo(val) {
-    this.setAttribute('logo', val);
+    this.setAttribute('logo', val ?? '');
   }
   get logo() {
     return this._logo;
@@ -113,14 +126,14 @@ class LiquidNavbar extends HTMLElement {
     if (this.hasAttribute('logo')) this._logo = this.getAttribute('logo');
     if (this.hasAttribute('items')) {
       try {
-        this._navItems = JSON.parse(this.getAttribute('items'));
+        this._navItems = JSON.parse(this.getAttribute('items') ?? '');
       } catch {
         this._navItems = [];
       }
     }
     if (this.hasAttribute('trailing')) {
       try {
-        this._trailing = JSON.parse(this.getAttribute('trailing'));
+        this._trailing = JSON.parse(this.getAttribute('trailing') ?? '');
       } catch {
         this._trailing = null;
       }
@@ -131,7 +144,7 @@ class LiquidNavbar extends HTMLElement {
       'topcornercurveradius', 'bottomcornercurveradius'
     ].forEach(attr => {
       if (this.hasAttribute(attr)) {
-        this._rectParams[this._toCamelCase(attr)] = parseFloat(this.getAttribute(attr));
+        this._rectParams[this._toParamName(attr)] = parseFloat(this.getAttribute(attr)!);
       }
     });      
     this.render();
@@ -165,8 +178,8 @@ class LiquidNavbar extends HTMLElement {
         ${Array.isArray(this._navItems) ? this._navItems.map(item => `
           <li class="nav-item">
             <a class="nav-link" href="${item.href || '#'}">
-            <span class="nav-icon">${item.icon ? `<img src="${item.icon}" alt="${item.label}" width="22" height="22" />` : ''}</span>
-            ${item.label || ''}
+              <span class="nav-icon">${item.icon ? `<img src="${item.icon}" alt="${item.label}" width="22" height="22" />` : ''}</span>
+              <span>${item.label || ''}</span>
             </a>
             <div class="nav-item-bg"></div>
           </li>
@@ -175,7 +188,7 @@ class LiquidNavbar extends HTMLElement {
           ${this._trailing ? `
             <a class="nav-link" href="${this._trailing.href || '#'}">
               <span class="nav-icon">${this._trailing.icon ? `<img src="${this._trailing.icon}" alt="${this._trailing.label}" width="22" height="22" />` : ''}</span>
-              ${this._trailing.label || ''}
+              <span>${this._trailing.label || ''}</span>
             </a>
             <div class="nav-item-bg"></div>
           ` : ''}
@@ -187,8 +200,10 @@ class LiquidNavbar extends HTMLElement {
     this.shadowRoot.appendChild(wrapper);
 
     requestAnimationFrame(() => {
+      if (!this.shadowRoot) return;
       const navItems = this.shadowRoot.querySelectorAll('.nav-link');
       const navDrawPath = this.shadowRoot.querySelector('#navbarDrawPath');
+      if (!navDrawPath) return;
       const cutoutCurveRad = 40;
       navItems.forEach(item => {
         item.addEventListener('mouseover', () => {
@@ -197,17 +212,17 @@ class LiquidNavbar extends HTMLElement {
           const safeMargin = (cutoutHeight - itemRect.height) / 2 + cutoutCurveRad;
           const targetParams = {
             ...this._rectParams, 
-            cutoutWidth: this._rectParams.rectWidth - itemRect.left - cutoutCurveRad - 25, 
-            cutoutHeight: cutoutHeight, 
+            cutoutWidth: this._rectParams.rectWidth - itemRect.left + itemRect.width * 0.35, 
+            cutoutHeight: cutoutHeight,
             topRightCutoutCurveRadius: cutoutCurveRad,
             bottomRightCutoutCurveRadius: cutoutCurveRad,
             topRightCutoutCurveHeight: (itemRect.top < safeMargin) ? 0 : cutoutCurveRad,
             bottomRightCutoutCurveHeight: (this._rectParams.rectHeight - itemRect.bottom < safeMargin) ? 0 : cutoutCurveRad, 
-            startY: itemRect.top - itemRect.height 
+            startY: itemRect.top - itemRect.height
           };
           const targetPath = getNavbarRect(targetParams);
           animatePath(navDrawPath.getAttribute('d'), targetPath, navDrawPath, 350);
-        })      
+        })
         item.addEventListener('mouseleave', () => {
           const itemRect = item.getBoundingClientRect();
           const flushParams = { 

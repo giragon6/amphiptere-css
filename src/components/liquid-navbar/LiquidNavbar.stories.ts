@@ -1,6 +1,7 @@
+import { Meta } from '@storybook/web-components-vite';
 import './liquid-navbar.js';
 
-export default {
+const meta: Meta = {
   title: 'Components/LiquidNavbar',
   tags: ['autodocs'],
   component: 'liquid-navbar',
@@ -9,16 +10,19 @@ export default {
   },
 };
 
+export default meta;
+     
 export const Basic = () => `
   <liquid-navbar
     logo="/assets/amphiptere-css-logo.svg"
     items='[
       {"label":"Home","href":"/home","icon":"/assets/home.svg"},
-      {"label":"Jobs","href":"/jobs","icon":"/assets/jobs.svg"}
+      {"label":"About","href":"/about","icon":"/assets/about.svg"},
+      {"label":"Careers","href":"/careers","icon":"/assets/careers.svg"},
+      {"label":"Our Team","href":"/team","icon":"/assets/team.svg"}
     ]'
     trailing='{"label":"Logout","href":"/logout","icon":"/assets/logout.svg"}',
-    rectwidth="200",
-    rectheight="700",
-    bottomcornercurveradius="40"
+    bottomcornercurveradius="40",
+    rectwidth="250"
   ></liquid-navbar>
 `;

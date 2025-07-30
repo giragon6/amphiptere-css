@@ -1,3 +1,16 @@
+export type RectParams = {
+  rectWidth: number,
+  rectHeight: number,
+  startY: number,
+  cutoutWidth: number,
+  cutoutHeight: number,
+  topRightCutoutCurveRadius: number,
+  bottomRightCutoutCurveRadius: number,
+  topCornerCurveRadius: number,
+  bottomCornerCurveRadius: number,
+  topRightCutoutCurveHeight?: number,
+  bottomRightCutoutCurveHeight?: number
+}
 
 /**
  * Returns SVG path for navbar rectangle with cutout
@@ -25,7 +38,7 @@ export default function getNavbarRect({
   bottomCornerCurveRadius,
   topRightCutoutCurveHeight = topRightCutoutCurveRadius,
   bottomRightCutoutCurveHeight = bottomRightCutoutCurveRadius
-} = {}) {
+}: RectParams) {
   const leftCutoutCurveWidth = cutoutHeight * 0.75;
   return `
     m0 0
