@@ -10,6 +10,12 @@ type NavElement = {
 }
     
 class LiquidNavbar extends HTMLElement {
+  static observedAttrs = [
+    'logo', 'items', 'trailing',
+    'width', 'height', 'starty', 'cutoutwidth', 'cutoutheight',
+    'toprightcutoutcurveradius', 'bottomrightcutoutcurveradius',
+    'topcornercurveradius', 'bottomcornercurveradius'
+  ];
   _navItems: NavElement[];
   _logo: string | null; // path to logo asset
   _trailing: NavElement | null;
@@ -36,12 +42,7 @@ class LiquidNavbar extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return [
-      'logo', 'items', 'trailing',
-      'rectwidth', 'rectheight', 'starty', 'cutoutwidth', 'cutoutheight',
-      'toprightcutoutcurveradius', 'bottomrightcutoutcurveradius',
-      'topcornercurveradius', 'bottomcornercurveradius'
-    ];
+    return LiquidNavbar.observedAttrs;
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -60,11 +61,7 @@ class LiquidNavbar extends HTMLElement {
         } catch {
           this._trailing = null;
         }
-      } else if ([
-        'rectwidth', 'rectheight', 'starty', 'cutoutwidth', 'cutoutheight',
-        'toprightcutoutcurveradius', 'bottomrightcutoutcurveradius',
-        'topcornercurveradius', 'bottomcornercurveradius'
-      ].includes(name)) {
+      } else if (LiquidNavbar.observedAttrs.includes(name)) {
         console.log(this._toParamName(name))
         this._rectParams = {
           ...this._rectParams,
@@ -78,9 +75,9 @@ class LiquidNavbar extends HTMLElement {
 
   _toParamName(attr) {
     switch (attr) {
-      case "rectwidth":
+      case "width":
         return "rectWidth";
-      case "rectheight":
+      case "height":
         return "rectHeight";
       case "starty":
         return "startY";
@@ -138,15 +135,11 @@ class LiquidNavbar extends HTMLElement {
         this._trailing = null;
       }
     }
-    [
-      'rectwidth', 'rectheight', 'starty', 'cutoutwidth', 'cutoutheight',
-      'toprightcutoutcurveradius', 'bottomrightcutoutcurveradius',
-      'topcornercurveradius', 'bottomcornercurveradius'
-    ].forEach(attr => {
+    LiquidNavbar.observedAttrs.forEach(attr => {
       if (this.hasAttribute(attr)) {
         this._rectParams[this._toParamName(attr)] = parseFloat(this.getAttribute(attr)!);
       }
-    });      
+    });
     this.render();
   }
 
@@ -218,7 +211,9 @@ class LiquidNavbar extends HTMLElement {
             bottomRightCutoutCurveRadius: cutoutCurveRad,
             topRightCutoutCurveHeight: (itemRect.top < safeMargin) ? 0 : cutoutCurveRad,
             bottomRightCutoutCurveHeight: (this._rectParams.rectHeight - itemRect.bottom < safeMargin) ? 0 : cutoutCurveRad, 
-            startY: itemRect.top - itemRect.height
+            startY: itemRect.top - itemRect.height,
+            topCornerCurveHeight: Math.min(itemRect.top - (cutoutHeight - itemRect.height) / 2, this._rectParams.topCornerCurveHeight ?? this._rectParams.topCornerCurveRadius),
+            bottomCornerCurveHeight: Math.min(this._rectParams.rectHeight - itemRect.bottom - (cutoutHeight - itemRect.height) / 2, this._rectParams.bottomCornerCurveHeight ?? this._rectParams.bottomCornerCurveRadius)
           };
           const targetPath = getNavbarRect(targetParams);
           animatePath(navDrawPath.getAttribute('d'), targetPath, navDrawPath, 350);
@@ -228,8 +223,8 @@ class LiquidNavbar extends HTMLElement {
           const flushParams = { 
             ...this._rectParams, 
             cutoutWidth: 0,
-            cutoutHeight: 0,  
-            topRightCutoutCurveRadius: 0, 
+            cutoutHeight: 0,
+            topRightCutoutCurveRadius: 0,
             bottomRightCutoutCurveRadius: 0, 
             startY: itemRect.top + itemRect.height / 2 
           };
@@ -237,7 +232,7 @@ class LiquidNavbar extends HTMLElement {
           animatePath(navDrawPath.getAttribute('d'), flushPath, navDrawPath, 350);
         })
       });
-    });
+    });  
   }
 }
 
