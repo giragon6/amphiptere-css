@@ -51,7 +51,7 @@ You can customize the look and feel using CSS custom properties:
 
 ## Storybook
 
-Visit the live storybook demo page to view an interactive example 
+[Visit the live storybook demo page to view an interactive example](https://giragon6.github.io/amphiptere-css/)
 
 ## License
 
