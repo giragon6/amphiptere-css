@@ -237,3 +237,4 @@ class LiquidNavbar extends HTMLElement {
 }
 
 customElements.define('liquid-navbar', LiquidNavbar);
+export { LiquidNavbar };
