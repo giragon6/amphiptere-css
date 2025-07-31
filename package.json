@@ -1,8 +1,16 @@
 {
   "name": "amphiptere-css",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
+  "main": "dist/liquid-navbar.umd.js",
+  "module": "dist/liquid-navbar.js",
+  "exports": {
+    ".": {
+      "import": "./dist/liquid-navbar.js",
+      "require": "./dist/liquid-navbar.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
