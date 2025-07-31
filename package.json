@@ -1,6 +1,6 @@
 {
   "name": "amphiptere-css",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A library for unique and visually engaging web components.",
   "keywords": ["web component", "navbar", "css", "svg", "custom elements"],
   "author": "giragon6",

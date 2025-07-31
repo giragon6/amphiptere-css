@@ -10,13 +10,6 @@ export default defineConfig({
       formats: ['es', 'umd'],
     },
     rollupOptions: {
-      external: ['d3', 'd3-interpolate-path'],
-      output: {
-        globals: {
-          d3: 'd3',
-          'd3-interpolate-path': 'd3InterpolatePath',
-        },
-      },
     },
     emptyOutDir: true,
   },

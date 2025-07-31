@@ -15,12 +15,6 @@ Install via npm:
 npm install amphiptere-css
 ```
 
-Or use a CDN (unpkg):
-
-```html
-<script type="module" src="https://unpkg.com/amphiptere-css/dist/liquid-navbar.js"></script>
-```
-
 ## Usage
 
 Import a component in your project (ESM):
