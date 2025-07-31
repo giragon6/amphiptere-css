@@ -71,7 +71,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   style="--navbar-background: linear-gradient(180deg, #232b6b 0%, #6a1e8a 100%); --nav-link-color: #fff;"
 ></liquid-navbar>
 \`\`\`
-        `}}},argTypes:{showLogo:{control:"boolean",description:"Show logo"},showTrailing:{control:"boolean",description:"Show trailing nav item"},showHome:{control:"boolean",description:"Show Home item"},showAbout:{control:"boolean",description:"Show About item"},showCareers:{control:"boolean",description:"Show Careers item"},showTeam:{control:"boolean",description:"Show Our Team item"},width:{control:"number",description:"Navbar width"},height:{control:"number",description:"Navbar height"},topcornercurveradius:{control:"number",description:"Top right corner radius"},bottomcornercurveradius:{control:"number",description:"Bottom right corner radius"},"--navbar-background":{control:"text",description:"Navbar background (CSS var)"},"--navbar-shadow":{control:"text",description:"Navbar shadow (CSS var)"},"--navbar-logo-width":{control:"text",description:"Top logo width (CSS var)"},"--nav-link-font-size":{control:"text",description:"Nav link font size (CSS var)"},"--nav-link-color":{control:"color",description:"Nav link color when not hovered (CSS var)"},"--nav-link-logo-gap":{control:"text",description:"Nav link gap (CSS var)"},"--nav-link-font-weight":{control:"text",description:"Nav link font weight (CSS var)"},"--nav-link-hover-filter":{control:"text",description:"Nav link hover filter (use this to change the link and icon color on hover) (CSS var)"},"--nav-link-hover-font-weight":{control:"text",description:"Nav link font weight on hover (CSS var)"},"--nav-link-transition":{control:"text",description:"Nav link transition when hovered (CSS var)"},"--nav-item-bg":{control:"color",description:"Nav item background cell color (CSS var)"},"--nav-item-bg-border-rad":{control:"text",description:"Nav item background cell border radius (CSS var)"},"--nav-item-bg-init-transform":{control:"text",description:"Nav item background cell initial transform (CSS var)"},"--nav-item-bg-final-transform":{control:"text",description:"Nav item background cell final transform (CSS var)"},"--nav-item-transition":{control:"text",description:"Nav item background transition (CSS var)"}}},na={label:"Logout",href:"/logout",icon:"/assets/logout.svg"},K=t=>{const e=Object.keys(t).filter(a=>a.startsWith("--")).map(a=>`${a}: ${t[a]}`).join("; "),n=[];t.showHome!==!1&&n.push({label:"Home",href:"/home",icon:"/assets/home.svg"}),t.showAbout!==!1&&n.push({label:"About",href:"/about",icon:"/assets/about.svg"}),t.showCareers!==!1&&n.push({label:"Careers",href:"/careers",icon:"/assets/careers.svg"}),t.showTeam!==!1&&n.push({label:"Our Team",href:"/team",icon:"/assets/team.svg"});const r=t.showLogo===!1?"":'logo="/assets/amphiptere-css-logo.svg"',i=t.showTrailing===!1?"":`trailing='${JSON.stringify(na)}'`;return`
+        `}}},argTypes:{showLogo:{control:"boolean",description:"Show logo"},showTrailing:{control:"boolean",description:"Show trailing nav item"},showHome:{control:"boolean",description:"Show Home item"},showAbout:{control:"boolean",description:"Show About item"},showCareers:{control:"boolean",description:"Show Careers item"},showTeam:{control:"boolean",description:"Show Our Team item"},width:{control:"number",description:"Navbar width"},height:{control:"number",description:"Navbar height"},topcornercurveradius:{control:"number",description:"Top right corner radius"},bottomcornercurveradius:{control:"number",description:"Bottom right corner radius"},"--navbar-background":{control:"text",description:"Navbar background (CSS var)"},"--navbar-shadow":{control:"text",description:"Navbar shadow (CSS var)"},"--navbar-logo-width":{control:"text",description:"Top logo width (CSS var)"},"--nav-link-font-size":{control:"text",description:"Nav link font size (CSS var)"},"--nav-link-color":{control:"color",description:"Nav link color when not hovered (CSS var)"},"--nav-link-logo-gap":{control:"text",description:"Nav link gap (CSS var)"},"--nav-link-font-weight":{control:"text",description:"Nav link font weight (CSS var)"},"--nav-link-hover-filter":{control:"text",description:"Nav link hover filter (use this to change the link and icon color on hover) (CSS var)"},"--nav-link-hover-font-weight":{control:"text",description:"Nav link font weight on hover (CSS var)"},"--nav-link-transition":{control:"text",description:"Nav link transition when hovered (CSS var)"},"--nav-item-bg":{control:"color",description:"Nav item background cell color (CSS var)"},"--nav-item-bg-border-rad":{control:"text",description:"Nav item background cell border radius (CSS var)"},"--nav-item-bg-init-transform":{control:"text",description:"Nav item background cell initial transform (CSS var)"},"--nav-item-bg-final-transform":{control:"text",description:"Nav item background cell final transform (CSS var)"},"--nav-item-transition":{control:"text",description:"Nav item background transition (CSS var)"}}},na={label:"Logout",href:"/logout",icon:"/amphiptere-css/assets/logout.svg"},K=t=>{const e=Object.keys(t).filter(a=>a.startsWith("--")).map(a=>`${a}: ${t[a]}`).join("; "),n=[];t.showHome!==!1&&n.push({label:"Home",href:"/home",icon:"/amphiptere-css/assets/home.svg"}),t.showAbout!==!1&&n.push({label:"About",href:"/about",icon:"/amphiptere-css/assets/about.svg"}),t.showCareers!==!1&&n.push({label:"Careers",href:"/careers",icon:"/amphiptere-css/assets/careers.svg"}),t.showTeam!==!1&&n.push({label:"Our Team",href:"/team",icon:"/amphiptere-css/assets/team.svg"});const r=t.showLogo===!1?"":'logo="/amphiptere-css/assets/amphiptere-css-logo.svg"',i=t.showTrailing===!1?"":`trailing='${JSON.stringify(na)}'`;return`
     <liquid-navbar
       ${r}
       items='${JSON.stringify(n)}'
@@ -93,24 +93,24 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   if (args.showHome !== false) items.push({
     label: 'Home',
     href: '/home',
-    icon: '/assets/home.svg'
+    icon: '/amphiptere-css/assets/home.svg'
   });
   if (args.showAbout !== false) items.push({
     label: 'About',
     href: '/about',
-    icon: '/assets/about.svg'
+    icon: '/amphiptere-css/assets/about.svg'
   });
   if (args.showCareers !== false) items.push({
     label: 'Careers',
     href: '/careers',
-    icon: '/assets/careers.svg'
+    icon: '/amphiptere-css/assets/careers.svg'
   });
   if (args.showTeam !== false) items.push({
     label: 'Our Team',
     href: '/team',
-    icon: '/assets/team.svg'
+    icon: '/amphiptere-css/assets/team.svg'
   });
-  const logoAttr = args.showLogo === false ? '' : 'logo="/assets/amphiptere-css-logo.svg"';
+  const logoAttr = args.showLogo === false ? '' : 'logo="/amphiptere-css/assets/amphiptere-css-logo.svg"';
   const trailingAttr = args.showTrailing === false ? '' : \`trailing='\${JSON.stringify(defaultTrailing)}'\`;
   return \`
     <liquid-navbar
